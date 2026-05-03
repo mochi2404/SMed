@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="app-booting">
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark"><i data-lucide="calendar-check"></i></span>
+          <div>
+            <h1>Content Hub</h1>
+            <p>Social media strategy workspace</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <label class="global-search">
+            <i data-lucide="search"></i>
+            <input id="global-search" type="search" placeholder="Cari task, konten, campaign..." />
+          </label>
+          <select class="topbar-select" id="type-filter" title="Filter kategori">
+            <option value="all">Semua</option>
+            <option value="task">Task</option>
+            <option value="posting">Posting</option>
+            <option value="meeting">Meeting</option>
+            <option value="deadline">Deadline</option>
+            <option value="campaign">Campaign</option>
+            <option value="note">Note</option>
+          </select>
+          <button class="icon-btn" id="export-btn" title="Export backup">
+            <i data-lucide="download"></i>
+          </button>
+          <button class="icon-btn" id="reminder-btn" title="Reminder">
+            <i data-lucide="bell"></i>
+            <span class="notification-dot" id="reminder-dot"></span>
+          </button>
+          <div class="date-chip">
+            <i data-lucide="clock-3"></i>
+            <div>
+              <span class="date-label">Hari ini</span>
+              <strong id="current-date"></strong>
+              <span id="current-time"></span>
+            </div>
+          </div>
+          <button class="icon-btn" id="logout-btn" title="Logout">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar">
+          <nav class="nav-list" aria-label="Main navigation">
+            <button class="nav-btn active" data-view="dashboard"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button>
+            <button class="nav-btn" data-view="calendar"><i data-lucide="calendar-days"></i><span>Calendar</span></button>
+            <button class="nav-btn" data-view="tasks"><i data-lucide="list-checks"></i><span>Task</span></button>
+            <button class="nav-btn" data-view="planner"><i data-lucide="columns-3"></i><span>Content Planner</span></button>
+            <button class="nav-btn" data-view="campaign"><i data-lucide="target"></i><span>Campaign</span></button>
+            <button class="nav-btn" data-view="notes"><i data-lucide="sticky-note"></i><span>Notes</span></button>
+            <button class="nav-btn" data-view="analytics"><i data-lucide="bar-chart"></i><span>Analytics</span></button>
+          </nav>
+
+          <section class="sidebar-panel">
+            <div class="panel-heading">
+              <h2>Hari Ini</h2>
+              <span id="today-count">0</span>
+            </div>
+            <div class="compact-list" id="today-tasks"></div>
+          </section>
+        </aside>
+
+        <main class="main-area">
+          <section class="view active" id="dashboard-view">
+            <div class="dashboard-grid">
+              <div class="stat-card">
+                <span>Total Task</span>
+                <strong id="total-tasks">0</strong>
+              </div>
+              <div class="stat-card">
+                <span>Minggu Ini</span>
+                <strong id="week-tasks">0</strong>
+              </div>
+              <div class="stat-card alert">
+                <span>Overdue</span>
+                <strong id="overdue-tasks">0</strong>
+              </div>
+              <div class="stat-card success">
+                <span>Posted</span>
+                <strong id="posted-tasks">0</strong>
+              </div>
+            </div>
+
+            <div class="dashboard-content">
+              <section class="surface calendar-preview">
+                <div class="section-head">
+                  <div>
+                    <h2>Kalender Konten</h2>
+                    <p>Ringkasan bulanan dengan badge aktivitas.</p>
+                  </div>
+                  <button class="text-btn" data-jump-view="calendar">Buka Calendar</button>
+                </div>
+                <div class="mini-calendar" id="dashboard-calendar"></div>
+              </section>
+
+              <section class="surface right-rail">
+                <div class="section-head">
+                  <div>
+                    <h2>Upcoming</h2>
+                    <p>Deadline terdekat.</p>
+                  </div>
+                </div>
+                <div class="task-list" id="upcoming-list"></div>
+              </section>
+            </div>
+
+            <section class="surface">
+              <div class="section-head">
+                <div>
+                  <h2>Status Pipeline</h2>
+                  <p>Progress dari ide sampai posted.</p>
+                </div>
+              </div>
+              <div class="status-strip" id="status-breakdown"></div>
+            </section>
+          </section>
+
+          <section class="view" id="calendar-view">
+            <div class="surface">
+              <div class="calendar-toolbar">
+                <div>
+                  <h2 id="calendar-title">Calendar</h2>
+                  <p id="calendar-subtitle">Monthly content schedule</p>
+                </div>
+                <div class="toolbar-actions">
+                  <div class="segmented">
+                    <button class="active" data-calendar-mode="month">Month</button>
+                    <button data-calendar-mode="week">Week</button>
+                  </div>
+                  <button class="icon-btn" id="prev-period" title="Sebelumnya"><i data-lucide="chevron-left"></i></button>
+                  <button class="icon-btn" id="next-period" title="Berikutnya"><i data-lucide="chevron-right"></i></button>
+                </div>
+              </div>
+              <div class="legend">
+                <span><b class="dot posting"></b>Posting</span>
+                <span><b class="dot task"></b>Task</span>
+                <span><b class="dot meeting"></b>Meeting</span>
+                <span><b class="dot deadline"></b>Deadline</span>
+                <span><b class="dot campaign"></b>Campaign</span>
+              </div>
+              <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+          </section>
+
+          <section class="view" id="tasks-view">
+            <div class="surface">
+              <div class="section-head">
+                <div>
+                  <h2>Task</h2>
+                  <p>Daftar tugas operasional yang terpisah dari content plan.</p>
+                </div>
+              </div>
+              <div class="task-list" id="tasks-list"></div>
+            </div>
+          </section>
+
+          <section class="view" id="planner-view">
+            <div class="surface">
+              <div class="section-head">
+                <div>
+                  <h2>Content Pipeline</h2>
+                  <p>Idea, Draft, Review, Scheduled, dan Posted.</p>
+                </div>
+              </div>
+              <div class="kanban" id="kanban-board"></div>
+            </div>
+          </section>
+
+          <section class="view" id="campaign-view">
+            <div class="surface">
+              <div class="section-head">
+                <div>
+                  <h2>Campaign Tracker</h2>
+                  <p>Goal, timeline, progress, dan konten terkait.</p>
+                </div>
+              </div>
+              <div class="campaign-list" id="campaign-list"></div>
+            </div>
+          </section>
+
+          <section class="view" id="notes-view">
+            <div class="surface">
+              <div class="section-head">
+                <div>
+                  <h2>Notes</h2>
+                  <p>Catatan bebas untuk ide, meeting recap, dan hal kecil yang perlu diingat.</p>
+                </div>
+                <label class="search-box">
+                  <i data-lucide="search"></i>
+                  <input type="search" id="notes-search" placeholder="Cari notes" />
+                </label>
+              </div>
+              <div class="notes-list" id="notes-list"></div>
+            </div>
+          </section>
+
+          <section class="view" id="analytics-view">
+            <div class="surface">
+              <div class="section-head">
+                <div>
+                  <h2>Analytics</h2>
+                  <p>Insight sederhana dari konten yang sudah dibuat.</p>
+                </div>
+              </div>
+              <div class="analytics-grid" id="analytics-grid"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <button class="quick-add" id="quick-add" title="Quick add">
+      <i data-lucide="plus"></i>
+    </button>
+
+    <div class="loading-overlay" id="loading-overlay" aria-live="polite" aria-busy="true">
+      <div class="loading-card">
+        <span class="loader"></span>
+        <div>
+          <strong id="loading-title">Memuat workspace</strong>
+          <p id="loading-copy">Sebentar ya, data terbaru sedang disiapkan.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast hidden" id="app-toast" role="status" aria-live="polite">
+      <i data-lucide="check-circle-2"></i>
+      <span id="toast-message">Berhasil disimpan</span>
+    </div>
+
+    <div class="modal hidden" id="quick-modal" role="dialog" aria-modal="true">
+      <form class="modal-card" id="quick-form">
+        <div class="modal-head">
+          <div class="modal-title-block">
+            <span class="eyebrow">Create</span>
+            <h2>Quick Capture</h2>
+            <p>Tambah task, ide konten, meeting, atau reminder.</p>
+          </div>
+          <button type="button" class="icon-btn close-modal" title="Tutup"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="form-sections">
+          <section class="form-section">
+            <div class="form-section-title">
+              <i data-lucide="sliders-horizontal"></i>
+              <div>
+                <h3>Kategori</h3>
+                <p>Tentukan jenis item dan posisi pipeline.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Jenis</span>
+                <select id="item-type">
+                  <option value="task">Task</option>
+                  <option value="posting">Posting</option>
+                  <option value="meeting">Meeting</option>
+                  <option value="deadline">Deadline</option>
+                  <option value="campaign">Campaign</option>
+                  <option value="note">Note / Catatan</option>
+                </select>
+              </label>
+              <label>
+                <span>Status</span>
+                <select id="item-status">
+                  <option value="idea">Idea</option>
+                  <option value="draft">Draft</option>
+                  <option value="review">Review</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="posted">Posted</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section-title">
+              <i data-lucide="file-text"></i>
+              <div>
+                <h3>Informasi Utama</h3>
+                <p>Judul singkat dan konteks yang perlu diingat.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label class="wide">
+                <span>Judul</span>
+                <input id="item-title" type="text" placeholder="Contoh: Reels launch campaign Mei" required />
+              </label>
+              <label class="wide">
+                <span>Deskripsi / Notes</span>
+                <textarea id="item-description" rows="3" placeholder="Brief, angle konten, agenda meeting, atau catatan penting"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section schedule-section">
+            <div class="form-section-title">
+              <i data-lucide="calendar-clock"></i>
+              <div>
+                <h3>Jadwal & Ownership</h3>
+                <p>Atur tanggal, waktu, platform, dan PIC.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label class="field-platform">
+                <span>Platform</span>
+                <select id="item-platform">
+                  <option value="">General</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="YouTube">YouTube</option>
+                  <option value="X">X</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                </select>
+              </label>
+              <label class="field-pic">
+                <span>PIC</span>
+                <input id="item-pic" type="text" placeholder="Nama PIC" />
+              </label>
+              <label class="field-date">
+                <span>Tanggal</span>
+                <input id="item-date" type="date" />
+              </label>
+              <label class="field-time">
+                <span>Jam</span>
+                <input id="item-time" type="time" />
+              </label>
+              <label class="field-campaign">
+                <span>Campaign / Brand</span>
+                <input id="item-campaign" type="text" placeholder="Nama campaign" />
+              </label>
+              <label class="field-reminder">
+                <span>Reminder</span>
+                <select id="item-reminder">
+                  <option value="">Tidak ada</option>
+                  <option value="24">H-1</option>
+                  <option value="6">6 jam sebelumnya</option>
+                  <option value="2">2 jam sebelumnya</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section meeting-section">
+            <div class="form-section-title">
+              <i data-lucide="users-round"></i>
+              <div>
+                <h3>Detail Meeting</h3>
+                <p>Pilih online atau offline, lalu isi link atau lokasi.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Format Meeting</span>
+                <select id="item-meeting-format">
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                </select>
+              </label>
+              <label class="meeting-online-field">
+                <span>Link Meeting</span>
+                <input id="item-meeting-link" type="url" placeholder="https://meet.google.com/..." />
+              </label>
+              <label class="meeting-offline-field">
+                <span>Lokasi</span>
+                <input id="item-meeting-location" type="text" placeholder="Contoh: Ruang meeting lantai 2" />
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section content-section">
+            <div class="form-section-title">
+              <i data-lucide="sparkles"></i>
+              <div>
+                <h3>Detail Konten</h3>
+                <p>Opsional, berguna untuk posting dan campaign.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label class="wide">
+                <span>Caption</span>
+                <textarea id="item-caption" rows="2" placeholder="Draft caption"></textarea>
+              </label>
+              <label>
+                <span>Hashtag</span>
+                <input id="item-hashtags" type="text" placeholder="#brand, #launch" />
+              </label>
+              <label>
+                <span>Asset Link</span>
+                <input id="item-asset" type="url" placeholder="https://..." />
+              </label>
+            </div>
+          </section>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn close-modal">Batal</button>
+          <button type="submit" class="primary-btn"><i data-lucide="save"></i>Simpan</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal hidden" id="detail-modal" role="dialog" aria-modal="true">
+      <div class="modal-card detail-card-shell">
+        <div class="modal-head">
+          <div class="modal-title-block">
+            <span class="eyebrow" id="detail-type"></span>
+            <h2 id="detail-title">Detail</h2>
+          </div>
+          <button type="button" class="icon-btn" id="detail-close" title="Tutup"><i data-lucide="x"></i></button>
+        </div>
+        <div class="detail-body" id="detail-body"></div>
+        <div class="modal-actions">
+          <button type="button" class="danger-btn" id="delete-item"><i data-lucide="trash-2"></i>Hapus</button>
+          <button type="button" class="secondary-btn" id="edit-item"><i data-lucide="pencil"></i>Edit</button>
+          <select id="detail-status-select" class="status-select">
+            <option value="idea">Idea</option>
+            <option value="draft">Draft</option>
+            <option value="review">Review</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="posted">Posted</option>
+          </select>
+          <button type="button" class="primary-btn" id="save-detail"><i data-lucide="check"></i>Simpan Status</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="day-modal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">Calendar</span>
+            <h2 id="day-modal-title">Daftar Tugas</h2>
+            <p id="day-modal-subtitle"></p>
+          </div>
+          <button type="button" class="icon-btn" id="day-close" title="Tutup"><i data-lucide="x"></i></button>
+        </div>
+        <div class="task-list" id="day-items-list"></div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="campaign-detail-modal" role="dialog" aria-modal="true">
+      <div class="modal-card detail-card-shell">
+        <div class="modal-head">
+          <div class="modal-title-block">
+            <span class="eyebrow">Campaign</span>
+            <h2 id="campaign-detail-title">Campaign Detail</h2>
+            <p id="campaign-detail-subtitle"></p>
+          </div>
+          <button type="button" class="icon-btn" id="campaign-detail-close" title="Tutup"><i data-lucide="x"></i></button>
+        </div>
+        <div class="campaign-detail-body" id="campaign-detail-body"></div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="reminder-modal" role="dialog" aria-modal="true">
+      <div class="modal-card reminder-card-shell">
+        <div class="modal-head">
+          <div class="modal-title-block">
+            <span class="eyebrow">Reminder</span>
+            <h2>Notifikasi Jadwal</h2>
+            <p id="reminder-subtitle">Daftar reminder dan jadwal terdekat.</p>
+          </div>
+          <button type="button" class="icon-btn" id="reminder-close" title="Tutup"><i data-lucide="x"></i></button>
+        </div>
+        <div class="reminder-tabs">
+          <button class="active" data-reminder-tab="due">Perlu Dicek</button>
+          <button data-reminder-tab="overdue">Overdue</button>
+          <button data-reminder-tab="today">Hari Ini</button>
+          <button data-reminder-tab="upcoming">Upcoming</button>
+        </div>
+        <div class="task-list reminder-list" id="reminder-list"></div>
+      </div>
+    </div>
+    <script>
+      window.__contentHubBootFailSafe = window.setTimeout(function () {
+        document.body.classList.remove("app-booting");
+        var loading = document.getElementById("loading-overlay");
+        if (loading) loading.classList.add("hidden");
+      }, 9000);
+    </script>
+  </body>
+</html>
