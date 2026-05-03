@@ -1,0 +1,12 @@
+{
+  "name": "content-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "seed:user": "node scripts/create-user.mjs",
+    "db:items": "node scripts/create-items-table.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}

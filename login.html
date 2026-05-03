@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Content Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="login.css" />
+    <script src="login.js" defer></script>
+  </head>
+  <body>
+    <main class="login-shell">
+      <section class="login-panel">
+        <div class="brand-mark">CH</div>
+        <div>
+          <p class="eyebrow">Private Workspace</p>
+          <h1>Content Hub</h1>
+          <p class="copy">Masuk untuk mengakses kalender, task, content planner, campaign, dan notes.</p>
+        </div>
+
+        <form id="login-form" class="login-form">
+          <label>
+            <span>Username</span>
+            <input id="username" name="username" autocomplete="username" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <p class="error" id="login-error" role="alert"></p>
+          <button type="submit" id="login-submit">Masuk</button>
+        </form>
+      </section>
+    </main>
+    <div class="loading-overlay hidden" id="login-loading" aria-live="polite" aria-busy="true">
+      <div class="loading-card">
+        <span class="loader"></span>
+        <div>
+          <strong>Memeriksa login</strong>
+          <p>Sedang mencocokkan akun dengan database.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
